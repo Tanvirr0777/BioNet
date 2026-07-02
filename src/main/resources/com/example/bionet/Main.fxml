@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bionet.MainController">
+
+    <!-- ===================== TOP ===================== -->
+
+    <top>
+
+        <VBox>
+
+            <MenuBar fx:id="menubar">
+
+                <Menu text="File" />
+                <Menu text="Edit" />
+                <Menu text="Graph" />
+                <Menu text="Tree" />
+                <Menu text="Help" />
+
+            </MenuBar>
+
+            <ToolBar>
+
+                <Button text="Add Disease" />
+                <Button text="Add Gene" />
+                <Button text="Add Drug" />
+                <Button text="Connect" />
+                <Button text="BFS" />
+                <Button text="DFS" />
+
+            </ToolBar>
+
+        </VBox>
+
+    </top>
+
+    <!-- ===================== LEFT ===================== -->
+
+    <left>
+
+        <VBox prefWidth="220" spacing="10">
+
+            <Label text="Disease Classification" />
+
+            <TreeView fx:id="diseaseTreeView" prefHeight="600"/>
+
+        </VBox>
+
+    </left>
+
+    <!-- ===================== CENTER ===================== -->
+
+    <center>
+
+        <Pane
+                fx:id="graphPane"
+                prefWidth="700"
+                prefHeight="700"/>
+
+    </center>
+
+    <!-- ===================== RIGHT ===================== -->
+
+    <right>
+
+        <VBox prefWidth="250" spacing="10">
+
+            <Label text="Node Information" />
+
+            <TextArea
+                    fx:id="infoArea"
+                    editable="false"
+                    wrapText="true"
+                    prefHeight="600"/>
+
+        </VBox>
+
+    </right>
+
+    <!-- ===================== BOTTOM ===================== -->
+
+    <bottom>
+
+        <HBox spacing="10" style="-fx-padding:10;">
+
+            <Label fx:id="statusLabel" />
+
+        </HBox>
+
+    </bottom>
+
+</BorderPane>

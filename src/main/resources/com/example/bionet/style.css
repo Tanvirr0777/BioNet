@@ -1,0 +1,39 @@
+.root {
+
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 14px;
+
+}
+
+.menu-bar {
+
+    -fx-background-color: #2C3E50;
+
+}
+#menubar{
+   -fx-background-color:"Skyblue";
+}
+
+.tool-bar {
+
+    -fx-background-color: #ECF0F1;
+
+}
+
+.button {
+
+    -fx-background-radius: 5;
+
+}
+
+.label {
+
+    -fx-font-weight: bold;
+
+}
+
+.text-area {
+
+    -fx-font-size: 13px;
+
+}
