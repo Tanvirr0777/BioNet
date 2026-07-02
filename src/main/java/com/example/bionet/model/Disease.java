@@ -6,14 +6,15 @@ public class Disease {
 
     private String name;
     private String category;
-    private List<String> genes;
-    private List<String> drugs;
     private String description;
+
+    private List<Gene> genes;
+    private List<Drug> drugs;
 
     public Disease(String name,
                    String category,
-                   List<String> genes,
-                   List<String> drugs,
+                   List<Gene> genes,
+                   List<Drug> drugs,
                    String description) {
 
         this.name = name;
@@ -31,11 +32,11 @@ public class Disease {
         return category;
     }
 
-    public List<String> getGenes() {
+    public List<Gene> getGenes() {
         return genes;
     }
 
-    public List<String> getDrugs() {
+    public List<Drug> getDrugs() {
         return drugs;
     }
 
