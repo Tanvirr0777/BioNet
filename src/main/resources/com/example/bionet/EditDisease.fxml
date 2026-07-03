@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10"
+      alignment="CENTER"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.bionet.dialog.EditDiseaseController">
+
+    <padding>
+        <Insets top="15" right="15" bottom="15" left="15"/>
+    </padding>
+
+    <Label text="Edit Disease"/>
+
+    <ComboBox fx:id="diseaseComboBox"
+              prefWidth="300"
+              promptText="Select Disease"/>
+
+    <TextField
+            fx:id="nameField"
+            promptText="Disease Name"/>
+
+    <TextField
+            fx:id="categoryField"
+            promptText="Category"/>
+
+    <TextArea
+            fx:id="descriptionArea"
+            prefHeight="120"
+            promptText="Description"/>
+
+    <Label text="Genes"/>
+
+    <TextArea
+            fx:id="geneArea"
+            prefHeight="80"
+            promptText="One gene per line"/>
+
+    <Label text="Drugs"/>
+
+    <TextArea
+            fx:id="drugArea"
+            prefHeight="80"
+            promptText="One drug per line"/>
+
+    <HBox spacing="10" alignment="CENTER">
+
+        <Button
+                text="Save"
+                onAction="#handleSave"/>
+
+        <Button
+                text="Remove"
+                onAction="#handleRemove"/>
+
+        <Button
+                text="Cancel"
+                onAction="#handleCancel"/>
+
+    </HBox>
+
+</VBox>

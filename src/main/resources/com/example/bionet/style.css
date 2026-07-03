@@ -2,38 +2,27 @@
 
     -fx-font-family: "Segoe UI";
     -fx-font-size: 14px;
+    -fx-background-color:"";
+    }
 
-}
-
-.menu-bar {
-
-    -fx-background-color: #2C3E50;
-
-}
-#menubar{
-   -fx-background-color:"Skyblue";
 }
 
 .tool-bar {
 
-    -fx-background-color: #ECF0F1;
-
+    -fx-background-color:"Skyblue";
 }
 
 .button {
 
     -fx-background-radius: 5;
-
 }
 
 .label {
 
     -fx-font-weight: bold;
-
 }
 
 .text-area {
 
     -fx-font-size: 13px;
-
 }

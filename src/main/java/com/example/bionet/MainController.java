@@ -1,7 +1,7 @@
 package com.example.bionet;
+import com.example.bionet.dialog.AddDiseaseController;
 import com.example.bionet.model.Disease;
-import com.example.bionet.tree.DiseaseNode;
-import com.example.bionet.tree.DiseaseTree;
+
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -17,6 +17,31 @@ import javafx.scene.layout.Pane;
 import com.example.bionet.visualization.GraphDrawer;
 import com.example.bionet.model.Gene;
 import com.example.bionet.model.Drug;
+
+import com.example.bionet.builder.GraphBuilder;
+import com.example.bionet.graph.Graph;
+
+import com.example.bionet.algorithm.BFS;
+import com.example.bionet.graph.GraphNode;
+import com.example.bionet.algorithm.DFS;
+
+import javafx.scene.control.TextField;
+import com.example.bionet.model.Gene;
+import com.example.bionet.model.Drug;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+import com.example.bionet.dialog.EditDiseaseController;
+
+import java.util.List;
 
 
 public class MainController {
@@ -34,6 +59,15 @@ public class MainController {
     @FXML
     private Pane graphPane;
 
+    private Disease currentDisease;
+
+    private Graph currentGraph;
+
+    @FXML
+    private TextField searchField;
+
+    private GraphDrawer graphDrawer = new GraphDrawer();
+
 
     @FXML
     public void initialize() {
@@ -42,7 +76,7 @@ public class MainController {
 
         loadDiseases();
 
-        initializeTree();
+        loadDiseaseTree();
 
         initializeTreeEvents();
 
@@ -545,24 +579,6 @@ public class MainController {
     }
 
 
-
-    // ==========================
-    // Build TreeView
-    // ==========================
-
-    private void initializeTree() {
-
-        DiseaseTree tree = new DiseaseTree();
-
-        TreeItem<String> rootItem = createTreeItem(tree.getRoot());
-
-        diseaseTreeView.setRoot(rootItem);
-
-        diseaseTreeView.setShowRoot(true);
-
-    }
-
-
     // ==========================
     // Tree Click Event
     // ==========================
@@ -580,17 +596,19 @@ public class MainController {
                     Disease disease =
                             diseaseDatabase.get(newValue.getValue());
 
-                    if (disease != null) {
+                    currentDisease = disease;
 
-                        showDiseaseInformation(disease);
-                    }
+                    GraphBuilder builder = new GraphBuilder();
 
-                    GraphDrawer drawer = new GraphDrawer();
+                    currentGraph = builder.buildGraph(disease);
 
-                    drawer.drawDiseaseGraph(
+                    showDiseaseInformation(disease);
+
+                    graphDrawer.drawDiseaseGraph(
                             graphPane,
                             disease,
-                            infoArea
+                            infoArea,
+                            disease.getName()
                     );
 
                 });
@@ -641,17 +659,374 @@ public class MainController {
 
     }
 
-    private TreeItem<String> createTreeItem(DiseaseNode node) {
 
-        TreeItem<String> item = new TreeItem<>(node.getName());
+    private void loadDiseaseTree() {
 
-        for (DiseaseNode child : node.getChildren()) {
 
-            item.getChildren().add(createTreeItem(child));
+        TreeItem<String> root = new TreeItem<>("Diseases");
+
+        Map<String, TreeItem<String>> categoryMap = new HashMap<>();
+
+        for (Disease disease : diseaseDatabase.values()) {
+
+            TreeItem<String> categoryNode =
+                    categoryMap.get(disease.getCategory());
+
+            if (categoryNode == null) {
+
+                categoryNode = new TreeItem<>(disease.getCategory());
+
+                categoryMap.put(disease.getCategory(), categoryNode);
+
+                root.getChildren().add(categoryNode);
+            }
+
+            categoryNode.getChildren().add(
+                    new TreeItem<>(disease.getName())
+            );
+        }
+
+        root.setExpanded(true);
+
+        diseaseTreeView.setRoot(root);
+    }
+
+    @FXML
+    private void handleBFS() {
+
+        if (currentGraph == null || currentDisease == null) {
+
+            infoArea.setText("Please select a disease first.");
+
+            return;
 
         }
 
-        return item;
+        GraphNode startNode =
+                currentGraph.findNode(currentDisease.getName());
+
+        if (startNode == null) {
+
+            infoArea.setText("Start node not found.");
+
+            return;
+
+        }
+
+        BFS bfs = new BFS();
+
+        List<GraphNode> traversal =
+                bfs.traverse(currentGraph, startNode);
+
+        StringBuilder result = new StringBuilder();
+
+        result.append("=========== BFS Traversal ===========\n\n");
+
+        int index = 1;
+
+        for (GraphNode node : traversal) {
+
+            result.append(index++)
+                    .append(". ")
+                    .append(node.getName())
+                    .append(" (")
+                    .append(node.getType())
+                    .append(")\n");
+
+        }
+
+        infoArea.setText(result.toString());
+
+        animateTraversal(traversal);
+
+    }
+
+    @FXML
+    private void handleDFS() {
+
+        if (currentGraph == null || currentDisease == null) {
+
+            infoArea.setText("Please select a disease first.");
+
+            return;
+
+        }
+
+        GraphNode startNode =
+                currentGraph.findNode(currentDisease.getName());
+
+        DFS dfs = new DFS();
+
+        List<GraphNode> traversal =
+                dfs.traverse(currentGraph, startNode);
+
+        StringBuilder result = new StringBuilder();
+
+        result.append("=========== DFS Traversal ===========\n\n");
+
+        int index = 1;
+
+        for (GraphNode node : traversal) {
+
+            result.append(index++)
+                    .append(". ")
+                    .append(node.getName())
+                    .append(" (")
+                    .append(node.getType())
+                    .append(")\n");
+
+        }
+
+        infoArea.setText(result.toString());
+        animateTraversal(traversal);
+
+    }
+
+    @FXML
+    private void handleSearch() {
+
+        String keyword = searchField.getText().trim();
+
+        if (keyword.isEmpty()) {
+
+            infoArea.setText("Please enter a keyword.");
+
+            return;
+
+        }
+
+        // -------- Search Disease --------
+
+        Disease disease = diseaseDatabase.get(keyword);
+
+        if (disease != null) {
+
+            currentDisease = disease;
+
+            GraphBuilder builder = new GraphBuilder();
+
+            currentGraph = builder.buildGraph(disease);
+
+            showDiseaseInformation(disease);
+
+            graphDrawer.drawDiseaseGraph(
+                    graphPane,
+                    disease,
+                    infoArea,
+                    disease.getName()
+            );
+            return;
+
+        }
+
+        // -------- Search Gene --------
+
+        for (Disease d : diseaseDatabase.values()) {
+
+            for (Gene gene : d.getGenes()) {
+
+                if (gene.getSymbol().equalsIgnoreCase(keyword)
+                        || gene.getFullName().equalsIgnoreCase(keyword)) {
+
+                    currentDisease = d;
+
+                    GraphBuilder builder = new GraphBuilder();
+
+                    currentGraph = builder.buildGraph(d);
+
+                    graphDrawer.drawDiseaseGraph(
+                            graphPane,
+                            d,
+                            infoArea,
+                            gene.getSymbol()
+                    );
+
+                    infoArea.setText(
+
+                            "Gene Symbol : " + gene.getSymbol()
+
+                                    + "\n\nFull Name : "
+
+                                    + gene.getFullName()
+
+                                    + "\n\nChromosome : "
+
+                                    + gene.getChromosome()
+
+                                    + "\n\nDescription :\n"
+
+                                    + gene.getDescription()
+
+                    );
+
+                    return;
+
+                }
+
+            }
+
+        }
+        // -------- Search Drug --------
+
+        for (Disease d : diseaseDatabase.values()) {
+
+            for (Drug drug : d.getDrugs()) {
+
+                if (drug.getName().equalsIgnoreCase(keyword)) {
+
+                    currentDisease = d;
+
+                    GraphBuilder builder = new GraphBuilder();
+
+                    currentGraph = builder.buildGraph(d);
+
+
+                    graphDrawer.drawDiseaseGraph(
+                            graphPane,
+                            d,
+                            infoArea,
+                            drug.getName()
+                    );
+
+                    infoArea.setText(
+
+                            "Drug : " + drug.getName()
+
+                                    + "\n\nClass : "
+
+                                    + drug.getDrugClass()
+
+                                    + "\n\nMechanism : "
+
+                                    + drug.getMechanism()
+
+                                    + "\n\nDescription :\n"
+
+                                    + drug.getDescription()
+
+                    );
+
+                    return;
+
+                }
+
+            }
+
+        }
+
+        infoArea.setText("No result found.");
+
+    }
+
+
+    private void animateTraversal(List<GraphNode> traversal) {
+
+        graphDrawer.resetColors();
+
+        Timeline timeline = new Timeline();
+
+        for (int i = 0; i < traversal.size(); i++) {
+
+            GraphNode node = traversal.get(i);
+
+            KeyFrame keyFrame = new KeyFrame(
+
+                    Duration.seconds(i),
+
+                    e -> graphDrawer.highlightNode(node.getName())
+
+            );
+
+            timeline.getKeyFrames().add(keyFrame);
+
+        }
+
+        timeline.play();
+
+    }
+
+
+    @FXML
+    private void handleAddDisease() {
+
+        try {
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/example/bionet/AddDisease.fxml")
+            );
+
+            Parent root = loader.load();
+
+            AddDiseaseController controller = loader.getController();
+
+            Stage stage = new Stage();
+
+            stage.setTitle("Add Disease");
+
+            stage.setScene(new Scene(root));
+
+            stage.showAndWait();
+
+            Disease disease = controller.getCreatedDisease();
+
+            if (disease != null) {
+
+                addDiseaseToSystem(disease);
+
+            }
+
+        }
+
+        catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
+    private void addDiseaseToSystem(Disease disease) {
+
+        diseaseDatabase.put(
+                disease.getName(),
+                disease
+        );
+
+        loadDiseaseTree();
+
+    }
+
+    private Runnable refreshCallback;
+
+    public void setRefreshCallback(Runnable refreshCallback) {
+
+        this.refreshCallback = refreshCallback;
+
+    }
+
+    @FXML
+    private void handleEditDisease() throws Exception {
+
+        FXMLLoader loader = new FXMLLoader(
+                getClass().getResource("EditDisease.fxml")
+        );
+
+        Scene scene = new Scene(loader.load());
+
+        EditDiseaseController controller =
+                loader.getController();
+
+        controller.setDiseaseDatabase(diseaseDatabase);
+
+        controller.setRefreshCallback(this::loadDiseaseTree);
+
+        Stage stage = new Stage();
+
+        stage.setTitle("Edit Disease");
+
+        stage.setScene(scene);
+
+        stage.show();
 
     }
 

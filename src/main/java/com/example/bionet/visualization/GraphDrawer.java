@@ -9,14 +9,26 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import java.util.HashMap;
+import java.util.Map;
+
+
 
 public class GraphDrawer {
 
+    private Map<String, Circle> nodeMap = new HashMap<>();
+    private Map<String, Color> nodeColorMap = new HashMap<>();
+
     public void drawDiseaseGraph(Pane pane,
                                  Disease disease,
-                                 TextArea infoArea) {
+                                 TextArea infoArea,
+                                 String highlightedNode) {
 
         pane.getChildren().clear();
+
+        nodeMap.clear();
+
+        nodeColorMap.clear();
 
         //---------------- Disease ----------------//
 
@@ -24,7 +36,26 @@ public class GraphDrawer {
         double diseaseY = 80;
 
         Circle diseaseCircle = new Circle(diseaseX, diseaseY, 25);
-        diseaseCircle.setFill(Color.ORANGE);
+
+        nodeMap.put(
+                disease.getName(),
+                diseaseCircle
+        );
+
+        nodeColorMap.put(
+                disease.getName(),
+                Color.ORANGE
+        );
+
+        if (disease.getName().equalsIgnoreCase(highlightedNode)) {
+
+            diseaseCircle.setFill(Color.RED);
+
+        } else {
+
+            diseaseCircle.setFill(Color.ORANGE);
+
+        }
 
         Text diseaseText = new Text(
                 diseaseX - 45,
@@ -53,6 +84,7 @@ public class GraphDrawer {
                 diseaseText
         );
 
+
         //---------------- Genes ----------------//
 
         int totalGenes = disease.getGenes().size();
@@ -68,7 +100,26 @@ public class GraphDrawer {
             double x = startX + i * gap;
 
             Circle geneCircle = new Circle(x, geneY, 20);
-            geneCircle.setFill(Color.LIGHTBLUE);
+
+            nodeMap.put(
+                    gene.getSymbol(),
+                    geneCircle
+            );
+
+            nodeColorMap.put(
+                    gene.getSymbol(),
+                    Color.LIGHTBLUE
+            );
+
+            if (gene.getSymbol().equalsIgnoreCase(highlightedNode)) {
+
+                geneCircle.setFill(Color.RED);
+
+            } else {
+
+                geneCircle.setFill(Color.LIGHTBLUE);
+
+            }
 
             Text geneText = new Text(
                     x - 20,
@@ -141,12 +192,31 @@ public class GraphDrawer {
             double drugX = 200 + i * 180;
 
             Circle drugCircle = new Circle(
+
                     drugX,
                     drugY,
                     20
             );
 
-            drugCircle.setFill(Color.LIGHTGREEN);
+            nodeMap.put(
+                    drug.getName(),
+                    drugCircle
+            );
+
+            nodeColorMap.put(
+                    drug.getName(),
+                    Color.LIGHTGREEN
+            );
+
+            if (drug.getName().equalsIgnoreCase(highlightedNode)) {
+
+                drugCircle.setFill(Color.RED);
+
+            } else {
+
+                drugCircle.setFill(Color.LIGHTGREEN);
+
+            }
 
             Text drugText = new Text(
                     drugX - 35,
@@ -199,6 +269,35 @@ public class GraphDrawer {
 
         }
 
+    }
+
+    public void highlightNode(String nodeName) {
+
+        Circle circle = nodeMap.get(nodeName);
+
+        if (circle != null) {
+
+            circle.setFill(Color.RED);
+
+        }
+
+    }
+
+    public void resetColors() {
+
+        for (String nodeName : nodeMap.keySet()) {
+
+            Circle circle = nodeMap.get(nodeName);
+
+            Color color = nodeColorMap.get(nodeName);
+
+            if (circle != null && color != null) {
+
+                circle.setFill(color);
+
+            }
+
+        }
     }
 
 }
