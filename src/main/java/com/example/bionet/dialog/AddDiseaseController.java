@@ -1,5 +1,6 @@
 package com.example.bionet.dialog;
 
+import com.example.bionet.HelloApplication;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -11,6 +12,7 @@ import com.example.bionet.model.Gene;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -106,6 +108,7 @@ public class AddDiseaseController {
         );
 
         Stage stage = (Stage) diseaseNameField.getScene().getWindow();
+
 
         stage.close();
 

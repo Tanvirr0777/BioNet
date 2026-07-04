@@ -24,7 +24,6 @@
         <VBox>
 
 
-
             <ToolBar>
 
                 <Button fx:id="addButton" onAction="#handleAddDisease" text="Add Disease" />

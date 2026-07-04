@@ -13,6 +13,7 @@ import java.util.List;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import com.example.bionet.visualization.GraphDrawer;
 import com.example.bionet.model.Gene;
@@ -72,7 +73,7 @@ public class MainController {
     @FXML
     public void initialize() {
 
-        statusLabel.setText("Status : Ready");
+
 
         loadDiseases();
 
@@ -963,6 +964,10 @@ public class MainController {
 
             stage.setTitle("Add Disease");
 
+            stage.getIcons().add(
+                    new Image(HelloApplication.class.getResourceAsStream("/logo_f.png"))
+            );
+
             stage.setScene(new Scene(root));
 
             stage.showAndWait();
@@ -1023,6 +1028,10 @@ public class MainController {
         Stage stage = new Stage();
 
         stage.setTitle("Edit Disease");
+
+        stage.getIcons().add(
+                new Image(HelloApplication.class.getResourceAsStream("/logo_f.png"))
+        );
 
         stage.setScene(scene);
 
