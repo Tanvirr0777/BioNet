@@ -11,7 +11,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <BorderPane xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.bionet.MainController">
 
@@ -70,7 +72,27 @@
 
     <center>
 
-        <Pane fx:id="graphPane" prefHeight="700" prefWidth="700" />
+        <Pane fx:id="graphPane" prefHeight="700" prefWidth="700">
+         <children>
+            <Circle fill="#f2073e" layoutX="141.0" layoutY="597.0" radius="7.0" stroke="#e20e0e" strokeType="INSIDE" />
+            <Circle fill="#73dfe9f5" layoutX="317.0" layoutY="597.0" radius="7.0" stroke="#0befe8" strokeType="INSIDE" />
+            <Circle fill="#51d46ff5" layoutX="515.0" layoutY="597.0" radius="7.0" stroke="#8ff8a2" strokeType="INSIDE" />
+            <Text fontSmoothingType="LCD" layoutX="159.0" layoutY="601.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Disease">
+               <font>
+                  <Font name="Baskerville Old Face" size="15.0" />
+               </font>
+            </Text>
+            <Text fontSmoothingType="LCD" layoutX="334.0" layoutY="601.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Gene">
+               <font>
+                  <Font name="Baskerville Old Face" size="15.0" />
+               </font>
+            </Text>
+            <Text fontSmoothingType="LCD" layoutX="528.0" layoutY="601.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Drugs">
+               <font>
+                  <Font name="Baskerville Old Face" size="15.0" />
+               </font>
+            </Text>
+         </children></Pane>
 
     </center>
 

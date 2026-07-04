@@ -24,7 +24,15 @@ public class GraphDrawer {
                                  TextArea infoArea,
                                  String highlightedNode) {
 
-        pane.getChildren().clear();
+
+
+        // Remove only dynamically drawn graph objects
+        pane.getChildren().removeIf(node ->
+
+                node.getUserData() != null &&
+                        node.getUserData().equals("GRAPH")
+
+        );
 
         nodeMap.clear();
 
@@ -36,6 +44,7 @@ public class GraphDrawer {
         double diseaseY = 80;
 
         Circle diseaseCircle = new Circle(diseaseX, diseaseY, 25);
+        diseaseCircle.setUserData("GRAPH");
 
         nodeMap.put(
                 disease.getName(),
@@ -63,6 +72,8 @@ public class GraphDrawer {
                 disease.getName()
         );
 
+        diseaseText.setUserData("GRAPH");
+
         diseaseCircle.setOnMouseClicked(e -> {
 
             infoArea.setText(
@@ -87,19 +98,30 @@ public class GraphDrawer {
 
         //---------------- Genes ----------------//
 
+
         int totalGenes = disease.getGenes().size();
 
-        double startX = 180;
-        double gap = 170;
+        double paneWidth = pane.getPrefWidth();
+
+        double leftMargin = 70;
+        double rightMargin = 70;
+
+        double usableWidth = paneWidth - leftMargin - rightMargin;
+
+        double gap = (totalGenes <= 1)
+                ? 0
+                : usableWidth / (totalGenes - 1);
+
         double geneY = 220;
 
         for (int i = 0; i < totalGenes; i++) {
 
             Gene gene = disease.getGenes().get(i);
 
-            double x = startX + i * gap;
+            double x = leftMargin + i * gap;
 
             Circle geneCircle = new Circle(x, geneY, 20);
+            geneCircle.setUserData("GRAPH");
 
             nodeMap.put(
                     gene.getSymbol(),
@@ -127,12 +149,16 @@ public class GraphDrawer {
                     gene.getSymbol()
             );
 
+            geneText.setUserData("GRAPH");
+
             Line line = new Line(
                     diseaseX,
                     diseaseY + 45,
                     x,
                     geneY - 20
             );
+
+            line.setUserData("GRAPH");
 
             geneCircle.setOnMouseClicked(e -> {
 
@@ -185,11 +211,15 @@ public class GraphDrawer {
 
         double drugY = 420;
 
+        double drugGap = (totalDrugs <= 1)
+                ? 0
+                : usableWidth / (totalDrugs - 1);
+
         for (int i = 0; i < totalDrugs; i++) {
 
             Drug drug = disease.getDrugs().get(i);
 
-            double drugX = 200 + i * 180;
+            double drugX = leftMargin + i * drugGap;
 
             Circle drugCircle = new Circle(
 
@@ -197,6 +227,8 @@ public class GraphDrawer {
                     drugY,
                     20
             );
+
+            drugCircle.setUserData("GRAPH");
 
             nodeMap.put(
                     drug.getName(),
@@ -223,6 +255,8 @@ public class GraphDrawer {
                     drugY + 35,
                     drug.getName()
             );
+
+            drugText.setUserData("GRAPH");
 
             drugCircle.setOnMouseClicked(e -> {
 
@@ -254,7 +288,7 @@ public class GraphDrawer {
             // Connect every gene to this drug
             for (int j = 0; j < totalGenes; j++) {
 
-                double geneX = startX + j * gap;
+                double geneX = leftMargin + j * gap;
 
                 Line line = new Line(
                         geneX,
@@ -262,6 +296,8 @@ public class GraphDrawer {
                         drugX,
                         drugY - 20
                 );
+
+                line.setUserData("GRAPH");
 
                 pane.getChildren().add(line);
 

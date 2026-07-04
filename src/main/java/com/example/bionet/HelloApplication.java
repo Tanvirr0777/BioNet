@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
 
 public class HelloApplication extends Application {
 
@@ -19,6 +20,11 @@ public class HelloApplication extends Application {
                 HelloApplication.class.getResource("style.css").toExternalForm());
 
         stage.setTitle("BioNet Explorer");
+
+        stage.getIcons().add(
+                new Image(HelloApplication.class.getResourceAsStream("/logo_f.png"))
+        );
+
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
