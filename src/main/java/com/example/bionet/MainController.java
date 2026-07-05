@@ -721,7 +721,7 @@ public class MainController {
 
         StringBuilder result = new StringBuilder();
 
-        result.append("=========== BFS Traversal ===========\n\n");
+        result.append("            BFS Traversal \n\n");
 
         int index = 1;
 
@@ -763,7 +763,7 @@ public class MainController {
 
         StringBuilder result = new StringBuilder();
 
-        result.append("=========== DFS Traversal ===========\n\n");
+        result.append("              DFS Traversal ===========\n\n");
 
         int index = 1;
 

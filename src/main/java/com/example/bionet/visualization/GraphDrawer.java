@@ -204,10 +204,13 @@ public class GraphDrawer {
 
             noDrug.setFill(Color.RED);
 
+            noDrug.setUserData("GRAPH");
+
             pane.getChildren().add(noDrug);
 
             return;
         }
+
 
         double drugY = 420;
 

@@ -5,9 +5,7 @@ public class DiseaseTree {
     private DiseaseNode root;
 
     public DiseaseTree() {
-
         buildTree();
-
     }
 
     private void buildTree() {
